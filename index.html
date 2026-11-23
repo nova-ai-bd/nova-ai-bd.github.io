@@ -262,6 +262,7 @@ textarea{font-size:17px;line-height:1.5}
     </div>
     <div class="grp"><h3>আমার নির্দেশ</h3>
       <div class="srow" style="flex-direction:column;align-items:stretch"><div><b>এআই যেন আমার সম্পর্কে জানে</b><small>যেমন: "আমাকে সবসময় বাংলায় উত্তর দাও"। চ্যাটে "মনে রাখো: …" লিখলেও এখানে যোগ হবে।</small></div><textarea id="cus" class="ta" placeholder="এখানে লিখুন…"></textarea></div>
+      <div class="srow" style="flex-direction:column;align-items:stretch"><div><b>নির্মাতার নাম</b><small>"কে বানিয়েছে?" জিজ্ঞেস করলে এই নাম বলবে</small></div><input id="maker" class="sel" style="margin-top:8px;width:100%" maxlength="60" placeholder="আপনার নাম"></div>
     </div>
     <div class="grp"><h3>ডেটা ও ইনস্টল</h3>
       <div class="srow"><div><b>ব্যাকআপ</b><small>চ্যাট ও নির্দেশ ফাইলে সেভ বা ফেরত আনুন</small></div><div style="display:flex;gap:8px"><button class="btn" id="exp" type="button">এক্সপোর্ট</button><button class="btn" id="imp" type="button">ইমপোর্ট</button></div></div>
@@ -652,9 +653,10 @@ async function doImage(p,w,signal){
   w.className='msg err';w.textContent='ছবি তৈরি হয়নি: '+err.message;hist.image.pop();
 }
 $('#hf').onchange=renderHist;
-$('#setBtn').onclick=()=>{$('#pstat').textContent='সংযুক্ত: '+(Object.keys(cfg.keys).filter(k=>cfg.keys[k]).map(k=>NAME[k]).join(', ')||'কেউ নয়');$('#cus').value=cfg.custom||'';$('#set').showModal()};
-const sysFor=m=>SYS[m]+(cfg.custom?'\n\nUser preferences (always follow): '+cfg.custom:'');
+$('#setBtn').onclick=()=>{$('#pstat').textContent='সংযুক্ত: '+(Object.keys(cfg.keys).filter(k=>cfg.keys[k]).map(k=>NAME[k]).join(', ')||'কেউ নয়');$('#cus').value=cfg.custom||'';$('#maker').value=cfg.maker||'';$('#set').showModal()};
+const sysFor=m=>SYS[m]+(cfg.maker?'\n\nIf asked who made, built or created you or this app (Nova), answer that the app was built by '+cfg.maker+'. If asked which AI model powers you, say honestly that it runs on third-party AI models and do not claim to have trained the model yourself.':'')+(cfg.custom?'\n\nUser preferences (always follow): '+cfg.custom:'');
 $('#cus').oninput=()=>{cfg.custom=$('#cus').value.slice(0,2000);store()};
+$('#maker').oninput=()=>{cfg.maker=$('#maker').value.trim().slice(0,60);store()};
 
 /* backup */
 $('#exp').onclick=()=>{
