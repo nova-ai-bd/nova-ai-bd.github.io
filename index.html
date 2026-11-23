@@ -191,6 +191,9 @@ textarea{font-size:17px;line-height:1.5}
 @media(max-width:860px){#chips{padding:0 12px}}
 .ta{width:100%;min-height:88px;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);resize:vertical}
 #set{max-height:92vh;overflow:auto}
+:root{--adm:#6d28d9;--admbg:#ede9fe}
+@media(prefers-color-scheme:dark){:root{--adm:#c4b5fd;--admbg:#2e1f5c}}
+.bdg{display:inline-flex;align-items:center;font-size:12px;font-weight:500;padding:2px 10px;border-radius:99px}
 .sel{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
 @media(max-width:860px){.ib.mobonly{display:inline-flex}#set{margin:auto 0 0;width:100%;max-width:none;border-radius:24px 24px 0 0}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -209,6 +212,7 @@ textarea{font-size:17px;line-height:1.5}
     <button class="btn pri" id="conn" type="button">সংযুক্ত করুন</button>
     <div id="lerr" role="alert"></div>
     <p class="fine">কী শুধু আপনার ব্রাউজারে থাকে এবং সরাসরি আপনার বেছে নেওয়া প্রোভাইডারকে পাঠানো হয়।</p>
+    <p class="fine" id="ownerLine" style="margin-top:14px"></p>
   </div>
 </div>
 
@@ -252,6 +256,7 @@ textarea{font-size:17px;line-height:1.5}
 <dialog id="set" aria-labelledby="stt">
   <div class="sheet">
     <div class="sh"><h2 id="stt">সেটিংস</h2><button class="ib" id="setClose" type="button" aria-label="বন্ধ"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="grp"><h3 id="ownTitle">নির্মাতা</h3><div id="ownerCard"></div></div>
     <div class="grp"><h3>এআই সংযোগ</h3>
       <div class="srow"><div><b>প্রোভাইডার</b><small id="pstat">বর্তমানে চালু আছে</small></div><span class="chip"><i></i><b id="pn">Gemini</b></span></div>
       <div class="srow"><div><b>প্রোভাইডার বা কী বদলান</b><small>অন্য প্রোভাইডারে যেতে</small></div><button class="btn" id="chgKey" type="button">বদলান</button></div>
@@ -262,8 +267,7 @@ textarea{font-size:17px;line-height:1.5}
     </div>
     <div class="grp"><h3>আমার নির্দেশ</h3>
       <div class="srow" style="flex-direction:column;align-items:stretch"><div><b>এআই যেন আমার সম্পর্কে জানে</b><small>যেমন: "আমাকে সবসময় বাংলায় উত্তর দাও"। চ্যাটে "মনে রাখো: …" লিখলেও এখানে যোগ হবে।</small></div><textarea id="cus" class="ta" placeholder="এখানে লিখুন…"></textarea></div>
-      <div class="srow" style="flex-direction:column;align-items:stretch"><div><b>নির্মাতার নাম</b><small>"কে বানিয়েছে?" জিজ্ঞেস করলে এই নাম বলবে</small></div><input id="maker" class="sel" style="margin-top:8px;width:100%" maxlength="60" placeholder="আপনার নাম"></div>
-    </div>
+      </div>
     <div class="grp"><h3>ডেটা ও ইনস্টল</h3>
       <div class="srow"><div><b>ব্যাকআপ</b><small>চ্যাট ও নির্দেশ ফাইলে সেভ বা ফেরত আনুন</small></div><div style="display:flex;gap:8px"><button class="btn" id="exp" type="button">এক্সপোর্ট</button><button class="btn" id="imp" type="button">ইমপোর্ট</button></div></div>
       <div class="srow"><div><b>ফোনে ইনস্টল</b><small>Chrome-এর ⋮ মেনু থেকে "Install app" বা "Add to Home screen" বেছে নিন</small></div><button class="btn pri" id="inst" type="button" style="display:none">ইনস্টল</button></div>
@@ -525,10 +529,10 @@ function doVideo(out){
 }
 
 const vlang=()=>($('#vlang')&&$('#vlang').value)||'bn-BD';
-function speakText(t){return String(t).replace(/```[\s\S]*?```/g,' ').replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu,'').replace(/https?:\/\/\S+/g,'').replace(/[*#`_~>|]/g,'').replace(/\s+/g,' ').trim()}
+function speakText(t){return String(t).replace(/```[\s\S]*?```/g,' ').replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu,'').replace(/SAMIUL\s+ISLAM\s+BASIR/gi,vlang().startsWith('bn')?OWNER.bn:'Samiul Islam Basir').replace(/https?:\/\/\S+/g,'').replace(/[*#`_~>|]/g,'').replace(/\s+/g,' ').trim()}
 window.addEventListener('message',e=>{if(e.data&&e.data.novaLoaded&&e.data.empty)window.dispatchEvent(new MessageEvent('message',{data:{novaErr:'অ্যাপের পেজ খালি এসেছে, কিছু দেখানো হয়নি'}}))});
 $('#vlang').value=cfg.vlang||'bn-BD';
-$('#vlang').onchange=()=>{cfg.vlang=$('#vlang').value;store()};
+$('#vlang').onchange=()=>{cfg.vlang=$('#vlang').value;store();renderOwner()};
 const HK='nova_chats_v1';let chats=[],act={};
 try{chats=JSON.parse(localStorage.getItem(HK)||'[]')||[];if(!Array.isArray(chats))chats=[]}catch(e){chats=[]}
 try{const o=JSON.parse(localStorage.getItem('nova_hist_v1')||'null');if(o&&!chats.length)Object.keys(o).forEach(k=>{if(META[k]&&Array.isArray(o[k])&&o[k].length)chats.push({id:Date.now()+k,mode:k,title:String(o[k][0].t||'চ্যাট').slice(0,40),msgs:o[k],ts:Date.now()})})}catch(e){}
@@ -653,10 +657,21 @@ async function doImage(p,w,signal){
   w.className='msg err';w.textContent='ছবি তৈরি হয়নি: '+err.message;hist.image.pop();
 }
 $('#hf').onchange=renderHist;
-$('#setBtn').onclick=()=>{$('#pstat').textContent='সংযুক্ত: '+(Object.keys(cfg.keys).filter(k=>cfg.keys[k]).map(k=>NAME[k]).join(', ')||'কেউ নয়');$('#cus').value=cfg.custom||'';$('#maker').value=cfg.maker||'';$('#set').showModal()};
-const sysFor=m=>SYS[m]+(cfg.maker?'\n\nIf asked who made, built or created you or this app (Nova), answer that the app was built by '+cfg.maker+'. If asked which AI model powers you, say honestly that it runs on third-party AI models and do not claim to have trained the model yourself.':'')+(cfg.custom?'\n\nUser preferences (always follow): '+cfg.custom:'');
+$('#setBtn').onclick=()=>{$('#pstat').textContent='সংযুক্ত: '+(Object.keys(cfg.keys).filter(k=>cfg.keys[k]).map(k=>NAME[k]).join(', ')||'কেউ নয়');$('#cus').value=cfg.custom||'';renderOwner();$('#set').showModal()};
+const OWNER={bn:'সামিউল ইসলাম বাসির',en:'SAMIUL ISLAM BASIR',url:'https://github.com/nova-ai-bd'};
+const uiEn=()=>/^en/i.test(cfg.vlang||navigator.language||'bn');
+function renderOwner(){
+  const en=uiEn(),main=en?OWNER.en:OWNER.bn,sub=en?OWNER.bn:OWNER.en;
+  const T=en?{h:'Creator',adm:'Admin',cre:'Creator',gh:'View GitHub profile',foot:'Admin and creator: '}:{h:'নির্মাতা',adm:'অ্যাডমিন',cre:'নির্মাতা',gh:'GitHub প্রোফাইল দেখুন',foot:'অ্যাডমিন ও নির্মাতা: '};
+  const c=$('#ownerCard');
+  if(c){
+    $('#ownTitle').textContent=T.h;
+    c.innerHTML='<div style="display:flex;align-items:center;gap:12px"><div style="width:48px;height:48px;border-radius:50%;background:var(--admbg);color:var(--adm);border:1.5px solid var(--adm);display:flex;align-items:center;justify-content:center;font-weight:600;flex:none">'+(en?'SB':'সা')+'</div><div style="min-width:0"><b style="display:block;font-size:17px">'+esc(main)+'</b><small style="color:var(--mute)">'+esc(sub)+'</small><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><span class="bdg" style="background:var(--admbg);color:var(--adm)">'+T.adm+'</span><span class="bdg" style="background:var(--soft);color:var(--brand)">'+T.cre+'</span></div></div></div><a href="'+OWNER.url+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font-size:14px;color:var(--brand)">'+T.gh+'</a>';
+  }
+  const l=$('#ownerLine');if(l)l.textContent=T.foot+main;
+}
+const sysFor=m=>SYS[m]+'\n\nIf asked who made, built, created or owns you or this app (Nova), answer that the app\'s admin and creator is '+OWNER.bn+' ('+OWNER.en+'). Always answer in the user\'s language: write the name as '+OWNER.bn+' when replying in Bengali, and as '+OWNER.en+' when replying in English. If asked which AI model powers you, say honestly that it runs on third-party AI models and do not claim to have trained the model yourself.'+(cfg.custom?'\n\nUser preferences (always follow): '+cfg.custom:'');
 $('#cus').oninput=()=>{cfg.custom=$('#cus').value.slice(0,2000);store()};
-$('#maker').oninput=()=>{cfg.maker=$('#maker').value.trim().slice(0,60);store()};
 
 /* backup */
 $('#exp').onclick=()=>{
@@ -687,6 +702,7 @@ if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.s
 $('#setClose').onclick=()=>$('#set').close();
 $('#set').addEventListener('click',e=>{if(e.target.id==='set')$('#set').close()});
 $('#chgKey').onclick=()=>{$('#set').close();$('#lock').classList.remove('hide');pickProv(cfg.prov)};
+renderOwner();
 gate();
 </script>
 </body>
