@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nova – আপনার এআই স্টুডিও</title>
+<meta name="description" content="বাংলায় চ্যাট, অ্যাপ ও ভিডিও তৈরির ফ্রি এআই স্টুডিও।">
+<meta property="og:title" content="Nova – আপনার এআই স্টুডিও">
+<meta property="og:description" content="বাংলায় চ্যাট, অ্যাপ ও ভিডিও তৈরির ফ্রি এআই স্টুডিও।">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b1020">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Cpath d='M32 12l4.5 13.5L50 30l-13.5 4.5L32 48l-4.5-13.5L14 30l13.5-4.5z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--surf:#fff;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--brand:#4338ca;--bi:#fff;--soft:#eef0ff;--warn:#c2410c;--warnbg:#fff4ec;--side:#0b1020;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.06)}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0f1c;--surf:#121a2b;--ink:#e8edf7;--mute:#8b97ad;--line:#1f2a40;--brand:#818cf8;--bi:#0a0f1c;--soft:#1a2142;--warn:#fdba74;--warnbg:#2a1a10;--sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3)}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;font-size:16px;line-height:1.6;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);overflow:hidden}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surf);border-radius:10px;padding:8px 14px;font-weight:500;transition:transform .15s,border-color .15s}
+.btn:hover{border-color:var(--brand)}.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--brand);color:var(--bi);border-color:var(--brand)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+
+/* lock */
+#lock{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(900px 500px at 15% 10%,#3b2fb8 0,transparent 60%),radial-gradient(700px 500px at 90% 90%,#0e7490 0,transparent 55%),#070b17;color:#e8edf7}
+#lock.hide{display:none}
+.card{width:min(440px,100%);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:24px;padding:32px 28px}
+.logo{display:flex;align-items:center;gap:12px;font-size:26px;font-weight:700;letter-spacing:-.3px}
+.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#818cf8,#22d3ee);display:grid;place-items:center;color:#0a0f1c}
+.card h2{font-size:22px;margin:22px 0 4px;font-weight:600}
+.card p{margin:0;color:#aab5ca}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:rgba(255,255,255,.08);padding:4px;border-radius:12px;margin:22px 0 14px}
+.seg button{border:0;background:none;padding:9px;border-radius:9px;color:#aab5ca;font-weight:500}
+.seg button.on{background:#fff;color:#0f172a}
+.card input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:#fff;margin-bottom:10px}
+.card input::placeholder{color:#7d8aa3}
+.card .btn.pri{width:100%;justify-content:center;padding:13px;background:#fff;color:#0f172a;border-color:#fff;font-weight:600;margin-top:4px}
+#lerr{color:#fda4af;min-height:24px;margin-top:10px;font-size:14px}
+.fine{font-size:13px;color:#8391ab;margin-top:6px}
+
+/* shell */
+#app{height:100%;display:grid;grid-template-columns:76px minmax(0,1fr)}
+#rail{background:var(--side);display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 0;color:#8f9bb5}
+#rail .mark{width:38px;height:38px;margin-bottom:18px}
+.nav{width:56px;padding:9px 0 7px;border:0;background:none;color:inherit;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px}
+.nav:hover{color:#fff}
+.nav[aria-selected=true]{background:rgba(129,140,248,.18);color:#fff}
+#rail .sp{flex:1}
+#shell{display:flex;flex-direction:column;min-width:0;min-height:0}
+.bar{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--surf);border-bottom:1px solid var(--line)}
+.bar h1{font-size:19px;margin:0;font-weight:600}
+.bar small{color:var(--mute);display:block;font-size:13px;line-height:1.2}
+.bar .grow{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:99px;background:var(--soft);color:var(--brand);font-size:13px;font-weight:600}
+.chip i{width:7px;height:7px;border-radius:50%;background:#10b981}
+#work{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);min-height:0}
+.conv{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line)}
+#log{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:88%;padding:11px 15px;border-radius:16px;background:var(--surf);border:1px solid var(--line);white-space:pre-wrap;word-break:break-word;box-shadow:var(--sh)}
+.msg.me{align-self:flex-end;background:var(--brand);color:var(--bi);border-color:transparent}
+.msg.err{border-color:var(--warn);color:var(--warn);background:var(--warnbg)}
+.msg pre{background:#0b1020;color:#dbe4f5;padding:10px 12px;border-radius:10px;overflow-x:auto;font-size:13px;margin:8px 0 0;white-space:pre}
+.dots span{display:inline-block;width:7px;height:7px;margin-right:4px;border-radius:50%;background:var(--mute);animation:b 1s infinite}
+.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.empty{margin:auto;text-align:center;max-width:380px}
+.empty h2{font-size:24px;margin:0 0 6px;font-weight:600}
+.empty p{color:var(--mute);margin:0 0 18px}
+.ex{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.ex button{border:1px solid var(--line);background:var(--surf);border-radius:99px;padding:7px 14px;font-size:14px}
+.ex button:hover{border-color:var(--brand);color:var(--brand)}
+form.box{display:flex;gap:10px;align-items:flex-end;padding:14px 22px 18px;background:var(--bg)}
+.in{flex:1;display:flex;background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:6px 6px 6px 14px;box-shadow:var(--sh)}
+.in:focus-within{border-color:var(--brand)}
+textarea{flex:1;border:0;background:none;resize:none;height:44px;max-height:140px;padding:9px 0;outline:0}
+.go{width:44px;height:44px;border-radius:12px;border:0;background:var(--brand);color:var(--bi);display:grid;place-items:center}
+.go[disabled]{opacity:.4}
+#out{display:flex;flex-direction:column;min-height:0;background:var(--surf)}
+#out .oh{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600}
+#out .oh span{flex:1}
+#oc{flex:1;overflow:auto;padding:16px;min-height:0}
+#oc iframe{width:100%;height:100%;min-height:300px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.ph{height:100%;display:grid;place-items:center;text-align:center;color:var(--mute);padding:20px}
+.stage{aspect-ratio:16/9;border-radius:16px;background:linear-gradient(135deg,#4338ca,#0e7490);color:#fff;display:grid;place-items:center;text-align:center;padding:24px;font-size:clamp(20px,3vw,30px);font-weight:700}
+.scene{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:10px}
+.scene small{color:var(--mute);display:block}
+.perm{border:1.5px solid var(--warn);background:var(--warnbg);border-radius:16px;padding:18px}
+.perm h3{margin:0 0 4px;font-size:18px}
+.perm code{display:block;background:var(--surf);border-radius:10px;padding:10px 12px;margin:12px 0;word-break:break-all;font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);background:#0f172a;color:#fff;padding:9px 16px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+#toast.on{opacity:1}
+.mobonly{display:none}
+
+@media(max-width:860px){
+#app{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+#rail{grid-row:2;flex-direction:row;justify-content:space-around;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+#rail .mark,#rail .sp,#rail .desk{display:none}
+body{padding-bottom:0}
+#work{grid-template-columns:1fr}
+.conv{border:0}
+.bar{padding:12px 14px}
+#log{padding:14px}form.box{padding:10px 12px 12px}
+#out{position:fixed;inset:0;z-index:40;transform:translateY(100%);transition:transform .25s;padding-top:env(safe-area-inset-top,0px)}
+#out.open{transform:none}
+.mobonly{display:inline-flex}
+}
+body{line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.logo,#out .oh,.scene b{font-family:"Anek Bangla","Hind Siliguri",sans-serif}
+.logo{font-size:30px;font-weight:800}
+.card h2{font-size:28px;line-height:1.3;font-weight:700;margin:26px 0 8px;background:linear-gradient(90deg,#fff,#a5b4fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.card p{font-size:16px;line-height:1.7}
+.bar{background:color-mix(in srgb,var(--surf) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.bar h1{font-size:22px;font-weight:700}
+.bar small{font-size:14px;margin-top:2px}
+.btn{font-weight:600}
+.nav{font-size:13px;font-weight:500;transition:background .15s,color .15s}
+.empty h2{font-size:34px;line-height:1.25;font-weight:800;margin-bottom:10px}
+.empty p{font-size:17px;line-height:1.7}
+.ex button{font-size:15px;padding:9px 16px;font-weight:500}
+.msg{font-size:17px;line-height:1.75;padding:13px 17px;border-radius:20px 20px 20px 6px;box-shadow:none}
+.msg.me{border-radius:20px 20px 6px 20px;background:linear-gradient(135deg,#4f46e5,#6d5dfc);color:#fff}
+.in{border-radius:20px;padding:6px 6px 6px 18px}
+textarea{font-size:17px;line-height:1.5}
+.go{border-radius:14px;background:linear-gradient(135deg,#4f46e5,#7c6cff);color:#fff}
+#out .oh{font-size:17px}
+#lock{overflow:hidden}
+#lock::before{content:"";position:absolute;inset:-20%;background:radial-gradient(40% 40% at 30% 30%,rgba(99,102,241,.45),transparent 70%),radial-gradient(35% 35% at 75% 70%,rgba(34,211,238,.35),transparent 70%);animation:drift 18s ease-in-out infinite alternate;pointer-events:none}
+.card{position:relative}
+@keyframes drift{to{transform:translate3d(6%,4%,0) scale(1.15)}}
+.card input:focus{border-color:#a5b4fc;box-shadow:0 0 0 4px rgba(165,180,252,.2);outline:0}
+.btn.pri{box-shadow:0 6px 18px rgba(67,56,202,.28)}
+.card .btn.pri{box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.msg{animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+.cpy{display:block;margin-top:8px;border:0;background:none;color:var(--mute);font-size:13px;padding:2px 0}
+.cpy:hover{color:var(--brand)}
+#log,#oc{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+@media(min-width:861px){.nav[aria-selected=true]{box-shadow:inset 3px 0 0 #818cf8}}
+.mic{width:44px;height:44px;border-radius:14px;border:0;background:none;color:var(--mute);display:grid;place-items:center;flex:none}
+.mic:hover{color:var(--brand)}
+.mic.on{background:#ef4444;color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(239,68,68,.2)}}
+#vmode[aria-pressed=true]{background:var(--brand);color:var(--bi);border-color:var(--brand)}
+.acts{display:flex;gap:16px;margin-top:8px}
+.acts .cpy{margin-top:0}
+.ib{width:40px;height:40px;border:1px solid var(--line);background:var(--surf);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink);flex:none}
+.ib:hover{border-color:var(--brand);color:var(--brand)}
+.ib.mobonly{display:none}
+#set{border:0;border-radius:24px;padding:0;width:min(440px,94vw);background:var(--surf);color:var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+#set::backdrop{background:rgba(5,8,18,.55);backdrop-filter:blur(3px)}
+.sheet{padding:20px 22px calc(18px + env(safe-area-inset-bottom,0px))}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.sh h2{margin:0;font-size:24px}
+.grp{padding:14px 0;border-top:1px solid var(--line)}
+.sh+.grp{border-top:0}
+.grp h3{margin:0 0 6px;font-size:13px;color:var(--mute);font-weight:600}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 0}
+.srow b{display:block;font-weight:600}
+.srow small{display:block;color:var(--mute);font-size:14px;line-height:1.4}
+.srow .chip b{display:inline}
+.sw{width:50px;height:30px;border-radius:99px;border:0;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.sw[aria-pressed=true]::after{transform:translateX(20px)}
+.btn.dng{color:#dc2626;border-color:#fca5a5}
+#toast{max-width:90vw;text-align:center;border-radius:16px;line-height:1.5}
+#hdlg{border:0;border-radius:24px;padding:0;width:min(460px,94vw);background:var(--surf);color:var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+#hdlg::backdrop{background:rgba(5,8,18,.55);backdrop-filter:blur(3px)}
+#hq{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);margin:10px 0}
+#hl{max-height:55vh;overflow:auto}
+.hrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.hopen{flex:1;text-align:left;background:none;border:0;padding:6px 4px;min-width:0}
+.hopen b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hopen small{color:var(--mute)}
+@media(max-width:860px){#hdlg{margin:auto 0 0;width:100%;max-width:none;border-radius:24px 24px 0 0}}
+#chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 22px}
+#chips:empty{display:none}
+.chip2{display:flex;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:4px;font-size:14px;max-width:100%}
+.chip2 img{width:36px;height:36px;object-fit:cover;border-radius:8px}
+.chip2 span{max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip2 button{border:0;background:none;color:var(--mute);padding:4px 6px}
+#att{margin-left:-10px}
+@media(max-width:860px){#chips{padding:0 12px}}
+.ta{width:100%;min-height:88px;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);resize:vertical}
+#set{max-height:92vh;overflow:auto}
+.sel{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+@media(max-width:860px){.ib.mobonly{display:inline-flex}#set{margin:auto 0 0;width:100%;max-width:none;border-radius:24px 24px 0 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="card">
+    <div class="logo"><div class="mark"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></div>Nova</div>
+    <h2>শুরু করতে API কী দিন</h2>
+    <p>কী দিলে Nova কাজ করবে। কী মুছলে আবার তালা লেগে যাবে।</p>
+    <div class="seg" id="pseg"><button data-p="gemini" class="on" type="button">Gemini</button><button data-p="groq" type="button">Groq</button><button data-p="openrouter" type="button">OpenRouter</button></div>
+    <input id="lkey" type="password" autocomplete="off" placeholder="API কী এখানে বসান">
+    <input id="lmodel" placeholder="মডেল">
+    <button class="btn pri" id="conn" type="button">সংযুক্ত করুন</button>
+    <div id="lerr" role="alert"></div>
+    <p class="fine">কী শুধু আপনার ব্রাউজারে থাকে এবং সরাসরি আপনার বেছে নেওয়া প্রোভাইডারকে পাঠানো হয়।</p>
+  </div>
+</div>
+
+<div id="app">
+  <nav id="rail" role="tablist" aria-label="টুল">
+    <div class="mark"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></div>
+    <button class="nav" role="tab" data-m="chat" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>চ্যাট</button>
+    <button class="nav" role="tab" data-m="app" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg>অ্যাপ</button>
+    <button class="nav" role="tab" data-m="video" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg>ভিডিও</button>
+    <button class="nav" role="tab" data-m="image" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg>ছবি</button>
+    
+    <div class="sp"></div>
+    
+  </nav>
+
+  <div id="shell">
+    <div class="bar">
+      <div><h1 id="ttl">চ্যাট</h1><small id="sub"></small></div>
+      <span class="grow"></span>
+      
+      <button class="ib mobonly" id="showOut" type="button" aria-label="ফলাফল দেখুন"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M13 4v16"/></svg></button>
+      <button class="ib" id="histBtn" type="button" aria-label="চ্যাটের তালিকা"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></button><button class="ib" id="newc" type="button" aria-label="নতুন কথোপকথন"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button><button class="ib" id="setBtn" type="button" aria-label="সেটিংস"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+      
+    </div>
+    <div id="work">
+      <section class="conv">
+        <div id="log"></div>
+        <div id="chips"></div>
+        <input type="file" id="fi" accept="image/*,.pdf,.txt,.md,.csv,.json,.html,.css,.js,.py,.xml" multiple hidden>
+        <form class="box" id="form">
+          <div class="in"><button class="mic" id="att" type="button" aria-label="ছবি বা ফাইল যোগ করুন"><svg viewBox="0 0 24 24"><path d="M20 11.5l-8 8a5 5 0 01-7-7l8.5-8.5a3.5 3.5 0 015 5L10 17.5a2 2 0 01-3-3L14.5 7"/></svg></button><textarea id="inp" rows="1" placeholder="লিখুন বা মাইকে বলুন…"></textarea><button class="mic" id="mic" type="button" aria-label="ভয়েসে লিখুন"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button><button class="go" id="send" type="submit" aria-label="পাঠান"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+        </form>
+      </section>
+      <aside id="out">
+        <div class="oh"><span id="otl">ফলাফল</span><button class="btn mobonly" id="hideOut" type="button">বন্ধ</button></div>
+        <div id="oc"></div>
+      </aside>
+    </div>
+  </div>
+</div>
+<dialog id="set" aria-labelledby="stt">
+  <div class="sheet">
+    <div class="sh"><h2 id="stt">সেটিংস</h2><button class="ib" id="setClose" type="button" aria-label="বন্ধ"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="grp"><h3>এআই সংযোগ</h3>
+      <div class="srow"><div><b>প্রোভাইডার</b><small id="pstat">বর্তমানে চালু আছে</small></div><span class="chip"><i></i><b id="pn">Gemini</b></span></div>
+      <div class="srow"><div><b>প্রোভাইডার বা কী বদলান</b><small>অন্য প্রোভাইডারে যেতে</small></div><button class="btn" id="chgKey" type="button">বদলান</button></div>
+    </div>
+    <div class="grp"><h3>ভয়েস</h3>
+      <div class="srow"><div><b>ভয়েস মোড</b><small>বললে নিজে পাঠায়, উত্তর পড়ে শোনায়</small></div><button class="sw" id="vmode" type="button" aria-pressed="false" aria-label="ভয়েস মোড"></button></div>
+      <div class="srow"><div><b>ভাষা</b><small>মাইক ও কণ্ঠের ভাষা</small></div><select id="vlang" class="sel"><option value="bn-BD">বাংলা</option><option value="en-US">English</option><option value="hi-IN">हिन्दी</option></select></div>
+    </div>
+    <div class="grp"><h3>আমার নির্দেশ</h3>
+      <div class="srow" style="flex-direction:column;align-items:stretch"><div><b>এআই যেন আমার সম্পর্কে জানে</b><small>যেমন: "আমাকে সবসময় বাংলায় উত্তর দাও"। চ্যাটে "মনে রাখো: …" লিখলেও এখানে যোগ হবে।</small></div><textarea id="cus" class="ta" placeholder="এখানে লিখুন…"></textarea></div>
+    </div>
+    <div class="grp"><h3>ডেটা ও ইনস্টল</h3>
+      <div class="srow"><div><b>ব্যাকআপ</b><small>চ্যাট ও নির্দেশ ফাইলে সেভ বা ফেরত আনুন</small></div><div style="display:flex;gap:8px"><button class="btn" id="exp" type="button">এক্সপোর্ট</button><button class="btn" id="imp" type="button">ইমপোর্ট</button></div></div>
+      <div class="srow"><div><b>ফোনে ইনস্টল</b><small>Chrome-এর ⋮ মেনু থেকে "Install app" বা "Add to Home screen" বেছে নিন</small></div><button class="btn pri" id="inst" type="button" style="display:none">ইনস্টল</button></div>
+    </div>
+    <input type="file" id="impf" accept="application/json,.json" hidden>
+    <div class="grp"><h3>নিরাপত্তা</h3>
+      <div class="srow"><div><b>কী মুছে তালা দিন</b><small>এই ডিভাইস থেকে কী মুছে যাবে</small></div><button class="btn dng" id="lockNow" type="button">মুছুন</button></div>
+    </div>
+  </div>
+</dialog>
+<dialog id="hdlg" aria-labelledby="htt"><div class="sheet"><div class="sh"><h2 id="htt">চ্যাটের তালিকা</h2><button class="ib" id="hClose" type="button" aria-label="বন্ধ"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><input id="hq" type="search" placeholder="খুঁজুন…"><select id="hf" class="sel" style="width:100%;margin-bottom:8px"><option value="">সব</option><option value="chat">চ্যাট</option><option value="app">আমার অ্যাপ</option><option value="video">ভিডিও</option><option value="image">ছবি</option></select><div id="hl"></div></div></dialog>
+<div id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);const KEY='nova_cfg_v1';
+let cfg={prov:'gemini',keys:{gemini:'',groq:''},models:{gemini:'gemini-3.8-flash',groq:'llama-3.3-70b-versatile'}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)cfg=Object.assign(cfg,s)}catch(e){}
+const store=()=>{try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){}};
+const NAME={gemini:'Gemini',groq:'Groq',openrouter:'OpenRouter'};
+cfg.keys=Object.assign({gemini:'',groq:'',openrouter:''},cfg.keys);cfg.models=Object.assign({openrouter:'openrouter/auto'},cfg.models);
+let mode='chat',lastHtml='',playing=false,orMax=4000;const hist={chat:[],app:[],video:[],image:[],mobile:[]};
+
+const META={
+ chat:{t:'চ্যাট',s:'যেকোনো প্রশ্ন, লেখা বা আইডিয়া',h:'আজ কী করবেন?',p:'প্রশ্ন করুন, লেখান বা পরামর্শ নিন।',ex:['একটি ব্যবসার নাম সাজেস্ট করো','ইমেইল ড্রাফট লেখো','জাভাস্ক্রিপ্ট সহজে বোঝাও']},
+ app:{t:'অ্যাপ বিল্ডার',s:'বর্ণনা দিন, চলন্ত অ্যাপ পান',h:'কী অ্যাপ বানাবেন?',p:'বাংলায় লিখুন, ডানে লাইভ প্রিভিউ আসবে।',ex:['দৈনিক খরচের হিসাব রাখার অ্যাপ','পোমোডোরো টাইমার','টু-ডু লিস্ট']},
+ video:{t:'ভিডিও স্টুডিও',s:'দৃশ্য, লেখা ও ন্যারেশন সহ প্রিভিউ',h:'কিসের ভিডিও?',p:'বিষয় দিন, দৃশ্য সাজিয়ে কণ্ঠসহ চালিয়ে দেখাব।',ex:['আমার ক্যাফের প্রোমো','নতুন ফোনের রিভিউ','স্বাস্থ্য সচেতনতা']},
+ image:{t:'ছবি স্টুডিও',s:'বর্ণনা দিন, ছবি পান',h:'কী ছবি বানাবেন?',p:'যেকোনো ছবির বর্ণনা লিখুন, Gemini কী লাগবে।',ex:['সূর্যাস্তে নদীর ধারে একটি নৌকা','ভবিষ্যতের ঢাকা শহর','একটি বন্ধুসুলভ রোবটের কার্টুন']},
+ mobile:{t:'মোবাইল সহকারী',s:'প্রতিটি কাজে আগে আপনার অনুমতি',h:'ফোনে কী করাতে চান?',p:'কল, মেসেজ, লিংক, শেয়ার, লোকেশন। অনুমতি ছাড়া কিছুই হবে না।',ex:['01700000000 নম্বরে কল দাও','আমার লোকেশন দেখাও','গুগল খুলে দাও']}
+};
+const SYS={
+chat:'তুমি Nova, একজন বন্ধুসুলভ ও দক্ষ এআই সহকারী। ব্যবহারকারীর ভাষায় পরিষ্কার ও সংক্ষিপ্ত উত্তর দাও। If asked to build an app, website or web page, output ONE complete self-contained HTML file (inline CSS and JS, no localStorage, no external libraries) inside a single ```html block.',
+app:'You are an expert front-end developer. Build the requested app as ONE complete self-contained HTML file (inline CSS and JS, no external libraries or CDN, never use localStorage/sessionStorage/cookies/alert/confirm/prompt (keep state in JS variables), JS must run without errors, html and body must fill the screen, keep the whole file compact (under about 250 lines), responsive, polished modern design). Reply with a one-line summary in the user\'s language, then the full code in exactly ONE ```html block starting with <!DOCTYPE html>. Never split CSS or JS into separate blocks or files, never output partial or placeholder code, and make sure something visible renders immediately.',
+video:'You are a video director. Reply with ONLY valid JSON, no markdown: {"title":"","scenes":[{"text":"short on-screen headline, max 8 words","narration":"one voice-over sentence","seconds":5,"icon":"one emoji","colors":["#dark hex","#vivid hex"]}]}. 5 to 8 scenes, vary the colors per scene, in the user\'s language.',
+mobile:'You operate a phone only through safe browser actions that need the user\'s permission. Reply with ONLY valid JSON, no markdown: {"say":"short reply in user\'s language","action":{"type":"call|sms|open_url|share|location|notify|vibrate|copy|none","value":"number, url or text","extra":"sms body or notification text"}}. Use none if nothing fits.'
+};
+
+function toast(m,ms){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.i);toast.i=setTimeout(()=>t.classList.remove('on'),ms||1800)}
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=t=>esc(t).replace(/```\w*\n?([\s\S]*?)```/g,'<pre>$1</pre>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+
+/* lock */
+let selP=cfg.prov;
+function pickProv(p){selP=p;document.querySelectorAll('#pseg button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));$('#lkey').value=cfg.keys[p]||'';$('#lmodel').value=cfg.models[p]}
+document.querySelectorAll('#pseg button').forEach(b=>b.onclick=()=>pickProv(b.dataset.p));
+function unlocked(){return !!cfg.keys[cfg.prov]}
+function gate(){const ok=unlocked();$('#lock').classList.toggle('hide',ok);if(ok){$('#pn').textContent=NAME[cfg.prov];setMode(mode)}else pickProv(cfg.prov)}
+async function call(prov,key,model,m,h){
+  if(prov==='gemini'){
+    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({systemInstruction:{parts:[{text:SYS[m]}]},generationConfig:{maxOutputTokens:16000},contents:h.map(x=>({role:x.r==='user'?'user':'model',parts:[{text:x.t}]}))})});
+    const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||'Gemini ত্রুটি '+r.status);
+    return j.candidates&&j.candidates[0].content?j.candidates[0].content.parts.map(p=>p.text||'').join(''):'';
+  }
+  const r=await fetch(prov==='groq'?'https://api.groq.com/openai/v1/chat/completions':'https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model,max_tokens:prov==='groq'?8000:orMax,messages:[{role:'system',content:SYS[m]}].concat(h.map(x=>({role:x.r,content:x.t})))})});
+  const j=await r.json();if(!r.ok){const em=(j.error&&j.error.message)||'ত্রুটি '+r.status;const mm=prov==='openrouter'&&/afford (\d+)/.exec(em);if(mm&&+mm[1]>300&&orMax>+mm[1]-30){orMax=+mm[1]-30;return call(prov,key,model,m,h)}throw new Error(em)}
+  return j.choices[0].message.content;
+}
+$('#conn').onclick=async()=>{
+  const k=$('#lkey').value.trim(),md=$('#lmodel').value.trim();const e=$('#lerr');e.textContent='';
+  if(!k){e.textContent='API কী ছাড়া Nova চালু হবে না।';return}
+  const b=$('#conn');b.disabled=true;b.textContent='যাচাই হচ্ছে…';
+  try{await call(selP,k,md,'chat',[{r:'user',t:'Say OK'}]);cfg.prov=selP;cfg.keys[selP]=k;cfg.models[selP]=md;store();gate();toast('সংযুক্ত হয়েছে')}
+  catch(err){e.textContent='কী কাজ করেনি: '+err.message}
+  b.disabled=false;b.textContent='সংযুক্ত করুন';
+};
+function lockNow(){try{$('#set').close()}catch(e){}cfg.keys[cfg.prov]='';store();chats=[];act={};Object.keys(hist).forEach(k=>hist[k]=[]);saveH();gate()}
+$('#lockNow').onclick=lockNow;
+
+/* ui */
+function setMode(m){
+  mode=m;chatFor(m);document.querySelectorAll('.nav[data-m]').forEach(b=>b.setAttribute('aria-selected',b.dataset.m===m));
+  const M=META[m];$('#ttl').textContent=M.t;$('#sub').textContent=M.s;$('#otl').textContent={chat:'ফলাফল',app:'লাইভ প্রিভিউ',video:'ভিডিও প্রিভিউ',image:'ছবি',mobile:'অনুমতি'}[m];
+  const l=$('#log');l.innerHTML='';
+  if(!hist[m].length){
+    l.innerHTML='<div class="empty"><h2>'+M.h+'</h2><p>'+M.p+'</p><div class="ex">'+M.ex.map(x=>'<button type="button">'+x+'</button>').join('')+'</div></div>';
+    l.querySelectorAll('.ex button').forEach(b=>b.onclick=()=>{$('#inp').value=b.textContent;$('#form').requestSubmit()});
+  }else hist[m].forEach(x=>add(x.r==='user'?(x.v||x.t):cleanAsst(m,x.t),x.r==='user'?'me':''));
+  $('#oc').innerHTML='<div class="ph">ফলাফল এখানে দেখাবে।</div>';
+  if(m==='app'){const la=[...hist.app].reverse().find(x=>x.r==='assistant'&&/```html/i.test(x.t));if(la)doApp(la.t,true)}
+  $('#out').classList.remove('open');
+}
+document.querySelectorAll('.nav[data-m]').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+$('#newc').onclick=()=>{const c={id:Date.now()+mode,mode,title:'নতুন চ্যাট',msgs:[],ts:Date.now()};chats.push(c);act[mode]=c.id;hist[mode]=c.msgs;saveH();setMode(mode)};
+$('#showOut').onclick=()=>$('#out').classList.add('open');$('#hideOut').onclick=()=>$('#out').classList.remove('open');
+const openOut=()=>{if(matchMedia('(max-width:860px)').matches)$('#out').classList.add('open')};
+function cleanAsst(m,t){if(m==='app')return t.replace(/```html[\s\S]*?(```|$)/i,'').trim()||'অ্যাপ তৈরি হয়েছে।';if(m==='video'||m==='mobile'){try{const j=pj(t);return m==='video'?'"'+j.title+'" তৈরি হয়েছে।':(j.say||'')}catch(e){}}return t}
+function add(t,c){const l=$('#log');const em=l.querySelector('.empty');if(em)em.remove();const d=document.createElement('div');d.className='msg '+(c||'');d.innerHTML=fmt(t);if(t&&c!=='me'&&c!=='err'){const ac=document.createElement('div');ac.className='acts';[['কপি',()=>navigator.clipboard.writeText(t).then(()=>toast('কপি হয়েছে'))],['শুনুন',()=>speak(t)]].forEach(([n,f])=>{const k=document.createElement('button');k.type='button';k.className='cpy';k.textContent=n;k.onclick=f;ac.appendChild(k)});d.appendChild(ac)}l.appendChild(d);l.scrollTop=l.scrollHeight;return d}
+const pj=t=>{const a=t.indexOf('{'),b=t.lastIndexOf('}');return JSON.parse(t.slice(a,b+1))};
+
+$('#form').onsubmit=async e=>{
+  e.preventDefault();if(busy){if(abortC)abortC.abort();return}heard='';if(listening)try{rec.stop()}catch(x){}let t=$('#inp').value.trim();if(!t&&pend.length)t='এই সংযুক্তিটি দেখে বিশ্লেষণ ও ব্যাখ্যা করো।';if(!t||!unlocked())return;const mm=/^\s*(মনে রাখো|মনে রাখুন|remember)\s*[:：,-]?\s*(.+)/i.exec(t);if(mm){cfg.custom=((cfg.custom||'')+'\n'+mm[2]).trim();store();toast('মনে রাখলাম',2500)}
+  $('#inp').value='';
+  const at=pend.splice(0);renderChips();let tt=t;
+  at.filter(a=>a.k==='txt').forEach(a=>{tt+='\n\n[ফাইল: '+a.n+']\n```\n'+a.d+'\n```'});
+  const disp=t+(at.length?'\n'+at.map(a=>'['+a.n+']').join(' '):'');
+  hist[mode].push({r:'user',t:tt,v:disp,a:at.filter(a=>a.k!=='txt')});add(disp,'me');{const cc=chats.find(x=>x.id===act[mode]);if(cc){if(cc.title==='নতুন চ্যাট')cc.title=t.slice(0,40);cc.ts=Date.now()}}
+  const m=mode;const w=add('');w.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';setBusy(true);
+  try{
+    abortC=new AbortController();part='';
+    if(m==='image'){await doImage(t,w,abortC.signal);setBusy(false);return}
+    const res=await callS(m,hist[m],txt=>{part=txt;w.className='msg';w.textContent=m==='chat'?txt:(m==='app'?'কোড লিখছি… ':'তৈরি করছি… ')+txt.length+' অক্ষর';if(m==='chat')$('#log').scrollTop=$('#log').scrollHeight},abortC.signal);
+    const out=res.text;hist[m].push({r:'assistant',t:out});saveH();w.remove();
+    if(mode!==m)toast('উত্তর তৈরি হয়েছে, ওই ট্যাবে দেখুন',3000);else if(m==='chat'){add(out);if(/```html/i.test(out))doApp(out,true)}else if(m==='app')doApp(out);else if(m==='video')doVideo(out);else doMobile(out);
+    if(res.cut&&mode===m&&m!=='app')add('উত্তর মাঝপথে কেটে গেছে (টোকেন সীমা)।','err');
+    if(vmode)speak(cleanAsst(m,out),()=>{if(vmode)startListen()});
+  }catch(err){if(err.name==='AbortError'){if(part&&m==='chat'){hist[m].push({r:'assistant',t:part});saveH();w.remove();if(mode===m)add(part)}else{w.remove();hist[m].pop()}}else{w.className='msg err';w.textContent=err.message;hist[m].pop()}}
+  setBusy(false);
+};
+$('#inp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&!matchMedia('(max-width:860px)').matches){e.preventDefault();if(!busy)$('#form').requestSubmit()}});
+
+function doApp(out,quiet){
+  if(!quiet)add(cleanAsst('app',out));const mt=out.match(/```html\s*([\s\S]*?)(```|$)/i)||out.match(/(<!DOCTYPE[\s\S]*|<html[\s\S]*)/i);
+  if(!mt){add('কোড পাওয়া যায়নি, আবার চেষ্টা করুন।','err');return}
+  lastHtml=mt[1];const c=$('#oc');const cutOff=!/<\/html>\s*$/i.test(lastHtml.trim());c.innerHTML='<div class="row"><button class="btn pri" id="dl" type="button">ডাউনলোড</button><button class="btn" id="vw" type="button">কোড দেখুন</button><button class="btn" id="nt" type="button">নতুন ট্যাবে</button><button class="btn" id="cp" type="button">কপি</button></div><div style="height:max(340px,calc(100dvh - 210px))"></div>';
+  const f=document.createElement('iframe');f.setAttribute('sandbox','allow-scripts allow-forms allow-modals');f.srcdoc=shimmed(lastHtml);c.lastChild.appendChild(f);
+  $('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lastHtml],{type:'text/html'}));a.download='my-app.html';a.click()};
+  $('#cp').onclick=()=>navigator.clipboard.writeText(lastHtml).then(()=>toast('কোড কপি হয়েছে'));
+  const box=c.lastChild;let showCode=false;
+  $('#vw').onclick=()=>{showCode=!showCode;$('#vw').textContent=showCode?'প্রিভিউ দেখুন':'কোড দেখুন';box.innerHTML='';
+    if(showCode){const p=document.createElement('pre');p.style.cssText='margin:0;height:100%;overflow:auto;background:#0b1020;color:#dbe4f5;padding:14px;border-radius:12px;font-size:13px;white-space:pre-wrap;word-break:break-all';p.textContent=lastHtml;box.appendChild(p)}
+    else{const f2=document.createElement('iframe');f2.setAttribute('sandbox','allow-scripts allow-forms allow-modals');f2.srcdoc=shimmed(lastHtml);box.appendChild(f2)}};
+  $('#nt').onclick=()=>window.open(URL.createObjectURL(new Blob([lastHtml],{type:'text/html'})),'_blank');
+  if(cutOff)setTimeout(()=>window.dispatchEvent(new MessageEvent('message',{data:{novaErr:'কোড মাঝপথে কেটে গেছে। সম্ভবত টোকেন বা ক্রেডিট সীমা কম। সেটিংসে Gemini বা Groq বেছে নিন, অথবা OpenRouter-এ ক্রেডিট বাড়ান।'}})),300);
+  openOut();
+}
+
+const LB={call:'কল করা',sms:'এসএমএস পাঠানো',open_url:'লিংক খোলা',share:'শেয়ার করা',location:'আপনার লোকেশন দেখা',notify:'নোটিফিকেশন দেখানো',vibrate:'ফোন ভাইব্রেট করা',copy:'ক্লিপবোর্ডে কপি করা'};
+function doMobile(out){
+  let j;try{j=pj(out)}catch(e){add(out);return}
+  add(j.say||'ঠিক আছে।');const a=j.action,c=$('#oc');
+  if(!a||a.type==='none'||!LB[a.type]){c.innerHTML='<div class="ph">কোনো কাজের অনুমতি লাগছে না।</div>';return}
+  c.innerHTML='<div class="perm"><h3>অনুমতি দিন: '+LB[a.type]+'</h3><code>'+esc(a.value||'')+(a.extra?'<br>'+esc(a.extra):'')+'</code><div class="row" style="margin:0"><button class="btn pri" id="ok">অনুমতি দিন</button><button class="btn" id="no">বাতিল</button></div></div>';
+  $('#no').onclick=()=>{c.innerHTML='<div class="ph">বাতিল করা হয়েছে।</div>'};$('#ok').onclick=()=>run(a);openOut();
+}
+async function run(a){
+  const c=$('#oc'),done=m=>{c.innerHTML='<div class="ph">'+esc(m)+'</div>'};const v=a.value||'';
+  try{
+    if(a.type==='call')location.href='tel:'+v.replace(/[^+\d]/g,'');
+    else if(a.type==='sms')location.href='sms:'+v.replace(/[^+\d]/g,'')+'?body='+encodeURIComponent(a.extra||'');
+    else if(a.type==='open_url'){if(!/^https?:\/\//.test(v))throw new Error('বৈধ লিংক নয়');window.open(v,'_blank','noopener')}
+    else if(a.type==='share'){if(!navigator.share)throw new Error('শেয়ার সমর্থিত নয়');await navigator.share({text:v})}
+    else if(a.type==='location'){const p=await new Promise((r,j)=>navigator.geolocation.getCurrentPosition(r,j));done('অক্ষাংশ '+p.coords.latitude.toFixed(5)+', দ্রাঘিমাংশ '+p.coords.longitude.toFixed(5));return}
+    else if(a.type==='notify'){if(await Notification.requestPermission()!=='granted')throw new Error('নোটিফিকেশনের অনুমতি মেলেনি');new Notification(v||'Nova',{body:a.extra||''})}
+    else if(a.type==='vibrate'){if(!navigator.vibrate)throw new Error('ভাইব্রেশন সমর্থিত নয়');navigator.vibrate([200,100,200])}
+    else if(a.type==='copy')await navigator.clipboard.writeText(v);
+    done('কাজ সম্পন্ন।');
+  }catch(e){done('ব্যর্থ: '+e.message)}
+}
+/* voice */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null,listening=false,vmode=false,heard='';
+function stopSpeak(){try{speechSynthesis.cancel()}catch(e){}}
+function speak(t,cb){
+  if(!('speechSynthesis' in window)){if(cb)cb();return}
+  stopSpeak();
+  const u=new SpeechSynthesisUtterance(speakText(t));
+  u.lang=vlang();u.onend=u.onerror=()=>{if(cb)cb()};speechSynthesis.speak(u);
+}
+function startListen(){
+  if(!SR){toast('এই ব্রাউজারে ভয়েস লেখা চলে না, Chrome ব্যবহার করুন');return}
+  if(listening)return;stopSpeak();
+  rec=new SR();rec.lang=vlang();rec.interimResults=true;rec.continuous=false;
+  const base=$('#inp').value;heard='';
+  rec.onstart=()=>{listening=true;$('#mic').classList.add('on')};
+  rec.onresult=e=>{let s='';for(const r of e.results)s+=r[0].transcript;heard=s;$('#inp').value=(base?base+' ':'')+s};
+  rec.onerror=e=>{listening=false;$('#mic').classList.remove('on');toast(micHelp(e.error),7000);if(e.error==='not-allowed'||e.error==='service-not-allowed'){vmode=false;$('#vmode').setAttribute('aria-pressed','false')}};
+  rec.onend=()=>{listening=false;$('#mic').classList.remove('on');if(vmode&&heard.trim())$('#form').requestSubmit()};
+  try{rec.start()}catch(e){}
+}
+$('#mic').onclick=()=>{if(listening)rec.stop();else startListen()};
+$('#vmode').onclick=()=>{vmode=!vmode;$('#vmode').setAttribute('aria-pressed',String(vmode));if(vmode)startListen();else{if(listening)rec.stop();stopSpeak()}};
+/* app preview: storage shim + error reporting */
+const SHIM='<script>(function(){try{localStorage.getItem("x")}catch(e){var m={},s={getItem:function(k){return k in m?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};["localStorage","sessionStorage"].forEach(function(n){try{Object.defineProperty(window,n,{value:s,configurable:true})}catch(x){}})}window.addEventListener("load",function(){setTimeout(function(){var b=document.body;parent.postMessage({novaLoaded:1,empty:!b||((b.innerText||"").trim().length<2&&!b.querySelector("canvas,svg,img,input,button,textarea,select"))},"*")},700)});window.addEventListener("error",function(e){parent.postMessage({novaErr:String(e.message)},"*")});window.addEventListener("unhandledrejection",function(e){parent.postMessage({novaErr:String(e.reason)},"*")})})();<\/script>';
+function shimmed(h){return /<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,m=>m+SHIM):SHIM+h}
+window.addEventListener('message',e=>{
+  if(!e.data||!e.data.novaErr||!$('#oc iframe')||$('#fixbar'))return;
+  const msg=e.data.novaErr;const b=document.createElement('div');b.id='fixbar';b.className='perm';b.style.marginBottom='12px';
+  b.innerHTML='<b>অ্যাপে ত্রুটি:</b> '+esc(msg)+'<div class="row" style="margin:10px 0 0"><button class="btn pri" id="fixBtn" type="button">এআইকে ঠিক করতে বলুন</button></div>';
+  $('#oc').prepend(b);
+  $('#fixBtn').onclick=()=>{$('#inp').value='অ্যাপে এই ত্রুটি আসছে: '+msg+'। ত্রুটি ঠিক করে পুরো কোড আবার দাও।';b.remove();$('#out').classList.remove('open');$('#form').requestSubmit()};
+});
+
+/* mic help */
+function micHelp(c){
+  if(c==='not-allowed'||c==='service-not-allowed')return location.protocol==='https:'?'মাইকের অনুমতি বন্ধ। ঠিকানার পাশের আইকন চেপে মাইক Allow করুন।':'ফাইল থেকে খুললে ব্রাউজার মাইকের অনুমতি দেয় না। ফাইলটি https সাইটে (যেমন Netlify বা GitHub Pages) আপলোড করে খুলুন।';
+  if(c==='no-speech')return'কিছু শোনা যায়নি, আবার বলুন।';
+  if(c==='audio-capture')return'মাইক পাওয়া যায়নি।';
+  if(c==='network')return'ভয়েস লেখায় ইন্টারনেট লাগে।';
+  return'ভয়েস চালু হয়নি ('+c+')।';
+}
+
+/* video studio (canvas, downloadable) */
+function rr(g,x,y,w,h,r){g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h);g.fill()}
+function doVideo(out){
+  let v;try{v=pj(out)}catch(e){add('উত্তর পড়া যায়নি, আবার চেষ্টা করুন।','err');return}
+  if(!v.scenes||!v.scenes.length){add('কোনো দৃশ্য পাওয়া যায়নি, আবার চেষ্টা করুন।','err');return}
+  add('"'+v.title+'" – '+v.scenes.length+'টি দৃশ্য তৈরি হয়েছে।');
+  const PAL=[['#4f46e5','#06b6d4'],['#be185d','#f59e0b'],['#047857','#0ea5e9'],['#7c3aed','#ec4899'],['#b45309','#dc2626'],['#0f766e','#6366f1']];
+  const hx=x=>typeof x==='string'&&/^#[0-9a-f]{3,8}$/i.test(x);
+  const S=v.scenes.map((s,i)=>({text:String(s.text||''),nar:String(s.narration||''),sec:Math.max(2,Math.min(12,+s.seconds||4)),icon:String(s.icon||''),col:(Array.isArray(s.colors)&&hx(s.colors[0])&&hx(s.colors[1]))?s.colors:PAL[i%PAL.length]}));
+  const c=$('#oc');
+  c.innerHTML='<canvas id="cv" width="1280" height="720" style="width:100%;border-radius:16px;display:block;background:#0b1020"></canvas><div class="row" style="margin:12px 0 8px"><button class="btn pri" id="play" type="button">প্লে করুন</button><button class="btn" id="stop" type="button">থামান</button><button class="btn" id="dlv" type="button">ভিডিও ডাউনলোড</button></div><label style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><input type="checkbox" id="vo" checked>ন্যারেশন কণ্ঠ</label><p id="vst" style="margin:0 0 8px;color:var(--mute);font-size:14px"></p>';
+  S.forEach((s,i)=>{const d=document.createElement('div');d.className='scene';d.innerHTML='<b>দৃশ্য '+(i+1)+'</b> '+esc(s.icon)+' '+esc(s.text)+'<small>'+esc(s.nar)+' · '+s.sec+' সেকেন্ড</small>';c.appendChild(d)});
+  const cv=$('#cv'),g=cv.getContext('2d'),W=1280,H=720,total=S.reduce((a,s)=>a+s.sec,0);
+  const ease=x=>1-Math.pow(1-Math.min(1,Math.max(0,x)),3);
+  function wrap(t,max){const w=t.split(/\s+/),L=[];let l='';for(const x of w){const n=l?l+' '+x:x;if(g.measureText(n).width>max&&l){L.push(l);l=x}else l=n}if(l)L.push(l);return L}
+  function frame(el){
+    let acc=0,i=0;while(i<S.length-1&&el>=acc+S[i].sec){acc+=S[i].sec;i++}
+    const s=S[i],tt=el-acc;
+    const gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,s.col[0]);gr.addColorStop(1,s.col[1]);g.fillStyle=gr;g.fillRect(0,0,W,H);
+    for(let k=0;k<3;k++){const x=W*(.2+.3*k)+Math.sin(el*.6+k*2)*90,y=H*(.3+.2*k)+Math.cos(el*.5+k)*60,r=260+40*k;const o=g.createRadialGradient(x,y,0,x,y,r);o.addColorStop(0,'rgba(255,255,255,.22)');o.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=o;g.fillRect(0,0,W,H)}
+    const vg=g.createRadialGradient(W/2,H/2,H*.4,W/2,H/2,H*.95);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.45)');g.fillStyle=vg;g.fillRect(0,0,W,H);
+    const p=ease(tt/.7),al=Math.min(p,ease((s.sec-tt)/.4));
+    g.save();g.globalAlpha=al;g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff';
+    if(s.icon){g.save();g.translate(W/2,205);const sc=.6+.4*p;g.scale(sc,sc);g.font='120px sans-serif';g.fillText(s.icon,0,0);g.restore()}
+    g.font='700 68px "Anek Bangla","Hind Siliguri",sans-serif';g.shadowColor='rgba(0,0,0,.35)';g.shadowBlur=18;
+    const L=wrap(s.text,W-220),lh=88,y0=(s.icon?390:320)-(L.length-1)*lh/2+(1-p)*30;
+    L.forEach((ln,k)=>g.fillText(ln,W/2,y0+k*lh));
+    g.restore();
+    if(s.nar){g.save();g.globalAlpha=al;g.font='500 30px "Hind Siliguri",sans-serif';const N=wrap(s.nar,W-260).slice(0,3),bh=N.length*42+28;g.fillStyle='rgba(0,0,0,.45)';rr(g,80,H-60-bh,W-160,bh,18);g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';N.forEach((ln,k)=>g.fillText(ln,W/2,H-60-bh+35+k*42));g.restore()}
+    g.font='600 24px "Hind Siliguri",sans-serif';g.fillStyle='rgba(255,255,255,.88)';g.textBaseline='top';g.textAlign='left';g.fillText(v.title||'',40,34);g.textAlign='right';g.fillText((i+1)+' / '+S.length,W-40,34);
+    g.fillStyle='rgba(255,255,255,.25)';g.fillRect(0,H-8,W,8);g.fillStyle='#fff';g.fillRect(0,H-8,W*Math.min(1,el/total),8);
+    return i;
+  }
+  let raf=0,run=0;
+  function stopP(){run++;cancelAnimationFrame(raf);try{speechSynthesis.cancel()}catch(e){}}
+  async function play(rec){
+    stopP();const my=++run;
+    try{if(document.fonts)await document.fonts.load('700 40px "Anek Bangla"')}catch(e){}
+    const voice=!rec&&$('#vo')&&$('#vo').checked;let last=-1;const t0=performance.now();
+    return new Promise(res=>{
+      const tick=now=>{
+        if(my!==run){res(false);return}
+        const el=Math.max(0,(now-t0)/1000);
+        if(el>=total){frame(total-.001);res(true);return}
+        const i=frame(el);
+        if(voice&&i!==last&&'speechSynthesis' in window){last=i;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(speakText(S[i].nar));u.lang=vlang();speechSynthesis.speak(u)}
+        raf=requestAnimationFrame(tick);
+      };
+      raf=requestAnimationFrame(tick);
+    });
+  }
+  $('#play').onclick=()=>{$('#vst').textContent='';play(false)};
+  $('#stop').onclick=stopP;
+  $('#dlv').onclick=async()=>{
+    if(!window.MediaRecorder||!cv.captureStream){toast('এই ব্রাউজারে ভিডিও সেভ চলে না, Chrome ব্যবহার করুন',4000);return}
+    const b=$('#dlv');b.disabled=true;$('#vst').textContent='ভিডিও রেকর্ড হচ্ছে। শেষ পর্যন্ত স্ক্রিন চালু রেখে এই পেজেই থাকুন…';
+    const mt=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(x=>MediaRecorder.isTypeSupported(x))||'';
+    const mr=new MediaRecorder(cv.captureStream(30),mt?{mimeType:mt,videoBitsPerSecond:6000000}:{}),ch=[];
+    mr.ondataavailable=e=>{if(e.data.size)ch.push(e.data)};
+    const done=new Promise(r=>{mr.onstop=r});mr.start();
+    const ok=await play(true);mr.stop();await done;b.disabled=false;
+    if(!ok){$('#vst').textContent='রেকর্ড বাতিল হয়েছে।';return}
+    const url=URL.createObjectURL(new Blob(ch,{type:'video/webm'}));
+    $('#vst').innerHTML='<video src="'+url+'" controls playsinline style="width:100%;border-radius:12px;margin-bottom:8px"></video><a class="btn pri" style="text-decoration:none" href="'+url+'" download="'+esc(v.title||'video')+'.webm">সেভ করুন (Downloads-এ যাবে)</a><br><small>WebM ফাইল, কণ্ঠ ছাড়া।</small>';
+  };
+  frame(0);
+  try{if(document.fonts)document.fonts.load('700 40px "Anek Bangla"').then(()=>frame(0))}catch(e){}
+  openOut();
+}
+
+const vlang=()=>($('#vlang')&&$('#vlang').value)||'bn-BD';
+function speakText(t){return String(t).replace(/```[\s\S]*?```/g,' ').replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu,'').replace(/https?:\/\/\S+/g,'').replace(/[*#`_~>|]/g,'').replace(/\s+/g,' ').trim()}
+window.addEventListener('message',e=>{if(e.data&&e.data.novaLoaded&&e.data.empty)window.dispatchEvent(new MessageEvent('message',{data:{novaErr:'অ্যাপের পেজ খালি এসেছে, কিছু দেখানো হয়নি'}}))});
+$('#vlang').value=cfg.vlang||'bn-BD';
+$('#vlang').onchange=()=>{cfg.vlang=$('#vlang').value;store()};
+const HK='nova_chats_v1';let chats=[],act={};
+try{chats=JSON.parse(localStorage.getItem(HK)||'[]')||[];if(!Array.isArray(chats))chats=[]}catch(e){chats=[]}
+try{const o=JSON.parse(localStorage.getItem('nova_hist_v1')||'null');if(o&&!chats.length)Object.keys(o).forEach(k=>{if(META[k]&&Array.isArray(o[k])&&o[k].length)chats.push({id:Date.now()+k,mode:k,title:String(o[k][0].t||'চ্যাট').slice(0,40),msgs:o[k],ts:Date.now()})})}catch(e){}
+function saveH(){chats=chats.filter(c=>c.msgs.length||Object.values(act).includes(c.id));try{localStorage.setItem(HK,JSON.stringify(chats.slice(-60),(k,v)=>k==='a'?undefined:v))}catch(e){}}
+function chatFor(m){
+  if(!META[m])return;
+  let c=chats.find(x=>x.id===act[m]&&x.mode===m);
+  if(!c)c=chats.filter(x=>x.mode===m).sort((a,b)=>b.ts-a.ts)[0];
+  if(!c){c={id:Date.now()+m,mode:m,title:'নতুন চ্যাট',msgs:[],ts:Date.now()};chats.push(c)}
+  act[m]=c.id;hist[m]=c.msgs;return c;
+}
+/* streaming + fallback */
+let busy=false,abortC=null,part='';
+function setBusy(b){busy=b;const s=$('#send');s.setAttribute('aria-label',b?'থামান':'পাঠান');s.innerHTML=b?'<svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>':'<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'}
+async function streamOne(prov,key,model,m,h,onTok,signal){
+  let url,headers={'Content-Type':'application/json'},body;
+  if(prov==='gemini'){
+    url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':streamGenerateContent?alt=sse';headers['x-goog-api-key']=key;
+    body={systemInstruction:{parts:[{text:sysFor(m)}]},generationConfig:{maxOutputTokens:16000},contents:h.map(x=>({role:x.r==='user'?'user':'model',parts:[{text:x.t}].concat((x.a||[]).map(a=>({inlineData:{mimeType:a.m,data:a.d}})))}))};
+  }else{
+    url=prov==='groq'?'https://api.groq.com/openai/v1/chat/completions':'https://openrouter.ai/api/v1/chat/completions';headers.Authorization='Bearer '+key;
+    body={model,stream:true,max_tokens:prov==='groq'?8000:orMax,messages:[{role:'system',content:sysFor(m)}].concat(h.map(x=>({role:x.r,content:(x.a&&x.a.some(a=>a.k==='img'))?[{type:'text',text:x.t}].concat(x.a.filter(a=>a.k==='img').map(a=>({type:'image_url',image_url:{url:'data:'+a.m+';base64,'+a.d}}))):x.t})))};
+  }
+  const r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),signal});
+  if(!r.ok){
+    let em='ত্রুটি '+r.status;try{const j=await r.json();em=(j.error&&j.error.message)||em}catch(e){}
+    const mm=prov==='openrouter'&&/afford (\d+)/.exec(em);
+    if(mm&&+mm[1]>300&&orMax>+mm[1]-30){orMax=+mm[1]-30;return streamOne(prov,key,model,m,h,onTok,signal)}
+    throw new Error(em);
+  }
+  const rd=r.body.getReader(),dec=new TextDecoder();let buf='',full='',cut=false;
+  for(;;){
+    const {done,value}=await rd.read();if(done)break;
+    buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
+    for(const ln of lines){
+      const s=ln.trim();if(!s.startsWith('data:'))continue;const p=s.slice(5).trim();if(!p||p==='[DONE]')continue;
+      let j;try{j=JSON.parse(p)}catch(e){continue}
+      let t='';
+      if(prov==='gemini'){const c=j.candidates&&j.candidates[0];if(c){if(c.content&&c.content.parts)t=c.content.parts.map(x=>x.text||'').join('');if(c.finishReason==='MAX_TOKENS')cut=true}}
+      else{if(j.error)throw new Error(j.error.message||'ত্রুটি');const c=j.choices&&j.choices[0];if(c){t=(c.delta&&c.delta.content)||'';if(c.finish_reason==='length')cut=true}}
+      if(t){full+=t;onTok(full)}
+    }
+  }
+  if(!full)throw new Error('কোনো উত্তর আসেনি');
+  return {text:full,cut};
+}
+async function callS(m,h,onTok,signal){
+  const first=(h.some(x=>x.a&&x.a.length)&&cfg.keys.gemini)?'gemini':cfg.prov;
+  const order=[first].concat(['gemini','groq','openrouter'].filter(p=>p!==first&&cfg.keys[p]));
+  let lastErr;
+  for(let i=0;i<order.length;i++){
+    const p=order[i];
+    try{
+      if(i>0)toast(NAME[order[i-1]]+' কাজ করেনি, '+NAME[p]+'-এ চেষ্টা করছি…',3000);
+      return await streamOne(p,cfg.keys[p],cfg.models[p]||(p==='openrouter'?'openrouter/auto':''),m,h,onTok,signal);
+    }catch(e){if(e.name==='AbortError')throw e;lastErr=e}
+  }
+  throw lastErr;
+}
+
+/* chat list */
+function renderHist(){
+  const q=($('#hq').value||'').trim().toLowerCase(),L=$('#hl'),LB2={chat:'চ্যাট',app:'অ্যাপ',video:'ভিডিও',image:'ছবি'};L.innerHTML='';
+  chats.filter(c=>LB2[c.mode]&&c.msgs.length&&(!$('#hf').value||c.mode===$('#hf').value)&&(!q||(c.title+' '+c.msgs.map(x=>x.t).join(' ')).toLowerCase().includes(q))).sort((a,b)=>b.ts-a.ts).forEach(c=>{
+    const d=document.createElement('div');d.className='hrow';
+    d.innerHTML='<button type="button" class="hopen"><b>'+esc(c.title)+'</b><small>'+LB2[c.mode]+' · '+new Date(c.ts).toLocaleDateString('bn-BD')+'</small></button><button class="ib" type="button" aria-label="নাম বদলান">✎</button><button class="ib" type="button" aria-label="মুছুন">✕</button>';
+    const [o,r,x]=d.children;
+    o.onclick=()=>{act[c.mode]=c.id;hist[c.mode]=c.msgs;$('#hdlg').close();setMode(c.mode)};
+    r.onclick=()=>{const n=prompt('নতুন নাম',c.title);if(n&&n.trim()){c.title=n.trim().slice(0,60);saveH();renderHist()}};
+    x.onclick=()=>{if(!confirm('এই চ্যাট মুছবেন?'))return;chats=chats.filter(z=>z.id!==c.id);if(act[c.mode]===c.id)delete act[c.mode];saveH();renderHist();if(c.mode===mode)setMode(mode)};
+    L.appendChild(d);
+  });
+  if(!L.children.length)L.innerHTML='<p style="color:var(--mute);text-align:center;margin:18px 0">কোনো চ্যাট নেই।</p>';
+}
+$('#histBtn').onclick=()=>{$('#hq').value='';renderHist();$('#hdlg').showModal()};
+$('#hClose').onclick=()=>$('#hdlg').close();
+$('#hq').oninput=renderHist;
+$('#hdlg').addEventListener('click',e=>{if(e.target.id==='hdlg')$('#hdlg').close()});
+/* attachments */
+let pend=[];
+function renderChips(){
+  const c=$('#chips');c.innerHTML='';
+  pend.forEach((a,i)=>{const d=document.createElement('div');d.className='chip2';
+    d.innerHTML=(a.k==='img'?'<img alt="" src="data:'+a.m+';base64,'+a.d+'">':'')+'<span>'+esc(a.n)+'</span><button type="button" aria-label="সরান">✕</button>';
+    d.querySelector('button').onclick=()=>{pend.splice(i,1);renderChips()};c.appendChild(d)});
+}
+function readImg(f){return new Promise((res,rej)=>{const u=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{const s=Math.min(1,1280/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);res({n:f.name||'ছবি',k:'img',m:'image/jpeg',d:cv.toDataURL('image/jpeg',.85).split(',')[1]})};
+  im.onerror=()=>rej(new Error('ছবি পড়া যায়নি'));im.src=u})}
+function readAs(f,how){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(how==='b64'?String(r.result).split(',')[1]:String(r.result));r.onerror=()=>rej(new Error('ফাইল পড়া যায়নি'));how==='b64'?r.readAsDataURL(f):r.readAsText(f)})}
+$('#att').onclick=()=>$('#fi').click();
+$('#fi').onchange=async e=>{
+  for(const f of [...e.target.files]){
+    if(pend.length>=4){toast('সর্বোচ্চ ৪টি যোগ করা যায়');break}
+    try{
+      if(f.type.startsWith('image/'))pend.push(await readImg(f));
+      else if(f.type==='application/pdf'||/\.pdf$/i.test(f.name)){if(f.size>8e6){toast('PDF বড় (৮ MB-এর বেশি)',3000);continue}pend.push({n:f.name,k:'pdf',m:'application/pdf',d:await readAs(f,'b64')})}
+      else{if(f.size>1e6){toast('ফাইল বড় (১ MB-এর বেশি)',3000);continue}pend.push({n:f.name,k:'txt',d:(await readAs(f,'txt')).slice(0,30000)})}
+    }catch(err){toast(err.message,3000)}
+  }
+  e.target.value='';renderChips();
+};
+
+/* image generation (Gemini) */
+async function doImage(p,w,signal){
+  const key=cfg.keys.gemini;
+  if(!key){w.className='msg err';w.textContent='ছবি তৈরির জন্য Gemini কী লাগবে। সেটিংসে "বদলান" চেপে Gemini কী দিন।';hist.image.pop();return}
+  w.textContent='ছবি আঁকছি…';let err;
+  for(const md of ['gemini-3.1-flash-image','gemini-3.1-flash-lite-image']){
+    try{
+      const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+md+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},signal,body:JSON.stringify({contents:[{parts:[{text:p}]}],generationConfig:{responseModalities:['TEXT','IMAGE']}})});
+      const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||'ত্রুটি '+r.status);
+      const parts=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[];
+      const im=parts.map(x=>x.inlineData||x.inline_data).find(Boolean);
+      if(!im)throw new Error('ছবি আসেনি, অন্যভাবে বর্ণনা করুন');
+      const mt=im.mimeType||im.mime_type||'image/png',src='data:'+mt+';base64,'+im.data;
+      w.className='msg';w.innerHTML='<img alt="" style="max-width:100%;border-radius:12px;display:block" src="'+src+'">';
+      $('#oc').innerHTML='<img alt="" style="width:100%;border-radius:14px;display:block" src="'+src+'"><div class="row" style="margin-top:12px"><a class="btn pri" style="text-decoration:none" href="'+src+'" download="image.'+(mt.split('/')[1]||'png')+'">সেভ করুন</a></div>';
+      hist.image.push({r:'assistant',t:'ছবি তৈরি হয়েছে।'});saveH();openOut();return;
+    }catch(e){if(e.name==='AbortError'){w.remove();hist.image.pop();return}err=e}
+  }
+  w.className='msg err';w.textContent='ছবি তৈরি হয়নি: '+err.message;hist.image.pop();
+}
+$('#hf').onchange=renderHist;
+$('#setBtn').onclick=()=>{$('#pstat').textContent='সংযুক্ত: '+(Object.keys(cfg.keys).filter(k=>cfg.keys[k]).map(k=>NAME[k]).join(', ')||'কেউ নয়');$('#cus').value=cfg.custom||'';$('#set').showModal()};
+const sysFor=m=>SYS[m]+(cfg.custom?'\n\nUser preferences (always follow): '+cfg.custom:'');
+$('#cus').oninput=()=>{cfg.custom=$('#cus').value.slice(0,2000);store()};
+
+/* backup */
+$('#exp').onclick=()=>{
+  const data={v:1,ts:Date.now(),custom:cfg.custom||'',chats:JSON.parse(JSON.stringify(chats,(k,v)=>k==='a'?undefined:v))};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));
+  a.download='nova-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();
+  toast('ব্যাকআপ ফাইল নামানো হয়েছে',3000);
+};
+$('#imp').onclick=()=>$('#impf').click();
+$('#impf').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{
+    const d=JSON.parse(await readAs(f,'txt'));if(!d||!Array.isArray(d.chats))throw new Error('ফাইলটি ব্যাকআপ নয়');
+    let n=0;
+    d.chats.forEach(c=>{if(c&&META[c.mode]&&Array.isArray(c.msgs)&&c.id&&!chats.some(x=>x.id===String(c.id))){
+      chats.push({id:String(c.id),mode:c.mode,title:String(c.title||'চ্যাট').slice(0,60),msgs:c.msgs.map(m=>({r:m.r==='user'?'user':'assistant',t:String(m.t||''),v:m.v?String(m.v):undefined})),ts:+c.ts||Date.now()});n++}});
+    if(d.custom&&!cfg.custom){cfg.custom=String(d.custom).slice(0,2000);store()}
+    saveH();$('#set').close();setMode(mode);toast(n+'টি চ্যাট ফেরত এসেছে',3000);
+  }catch(err){toast('ইমপোর্ট ব্যর্থ: '+err.message,4000)}
+};
+
+/* install (PWA) */
+let ip=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();ip=e;$('#inst').style.display='inline-flex'});
+$('#inst').onclick=async()=>{if(!ip)return;ip.prompt();try{await ip.userChoice}catch(x){}ip=null;$('#inst').style.display='none'};
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+$('#setClose').onclick=()=>$('#set').close();
+$('#set').addEventListener('click',e=>{if(e.target.id==='set')$('#set').close()});
+$('#chgKey').onclick=()=>{$('#set').close();$('#lock').classList.remove('hide');pickProv(cfg.prov)};
+gate();
+</script>
+</body>
+</html>
